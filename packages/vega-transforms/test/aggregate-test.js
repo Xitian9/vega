@@ -19,7 +19,7 @@ tape('Aggregate aggregates tuples', t => {
       agg = df.add(Aggregate, {
         groupby: [key],
         fields: [val, val, val, val, val],
-        ops: ['count', 'sum', 'min', 'max', 'product'],
+        ops: ['count', 'sum', 'min', 'max', 'product', {'exponential': 0.6}],
         pulse: col
       }),
       out = df.add(Collect, {pulse: agg});
@@ -34,12 +34,14 @@ tape('Aggregate aggregates tuples', t => {
   t.equal(d[0].min_v, 1);
   t.equal(d[0].max_v, 2);
   t.equal(d[0].product_v, 2);
+  t.equal(d[0].exp_v, 1.625);
   t.equal(d[1].k, 'b');
   t.equal(d[1].count_v, 2);
   t.equal(d[1].sum_v, 7);
   t.equal(d[1].min_v, 3);
   t.equal(d[1].max_v, 4);
   t.equal(d[1].product_v, 12);
+  t.equal(d[1].exp_v, 3.625);
 
   // -- test rems
   df.pulse(col, changeset().remove(data.slice(0, 2))).run();
